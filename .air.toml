@@ -1,0 +1,11 @@
+[build]
+cmd = "go build -o ./bin/scraper"
+bin = "./bin/scraper"
+include_ext = ["go"]
+exclude_dir = ["vendor", "bin"]
+
+[log]
+level = "debug"
+
+[env]
+env_file = ".env"
