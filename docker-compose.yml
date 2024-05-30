@@ -3,7 +3,7 @@ services:
     image: postgres
     container_name: postgres
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
   api:
