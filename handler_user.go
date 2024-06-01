@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/ryanzola/scraper/internal/auth"
 	"github.com/ryanzola/scraper/internal/database"
 )
 
@@ -31,6 +32,25 @@ func (apiCfg *apiConfig) handleCreateUser(w http.ResponseWriter, r *http.Request
 	})
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, fmt.Sprintf("error creating user: %v", err))
+		return
+	}
+
+	respondWithJSON(w, 201, databaseUserToUser(user))
+}
+
+func (apiCfg *apiConfig) handleGetUser(w http.ResponseWriter, r *http.Request) {
+	// which is a 403 forbidden error?
+	// http.Error(w, "Forbidden", http.StatusForbidden)
+
+	key, err := auth.GetAPIKey(r.Header)
+	if err != nil {
+		respondWithError(w, http.StatusForbidden, fmt.Sprintf("authentication error: %v", err))
+		return
+	}
+
+	user, err := apiCfg.DB.GetUserByAPIKey(r.Context(), key)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, fmt.Sprintf("error getting user: %v", err))
 		return
 	}
 
