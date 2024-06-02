@@ -10,9 +10,10 @@ import (
 	"github.com/ryanzola/scraper/internal/database"
 )
 
-func (apiCfg *apiConfig) handleCreateUser(w http.ResponseWriter, r *http.Request) {
+func (apiCfg *apiConfig) handleCreateFeed(w http.ResponseWriter, r *http.Request, user database.User) {
 	type parameters struct {
 		Name string `json:"name"`
+		Url  string `json:"url"`
 	}
 
 	params := parameters{}
@@ -23,20 +24,18 @@ func (apiCfg *apiConfig) handleCreateUser(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	user, err := apiCfg.DB.CreateUser(r.Context(), database.CreateUserParams{
+	feed, err := apiCfg.DB.CreateFeed(r.Context(), database.CreateFeedParams{
 		ID:        uuid.New(),
 		Name:      params.Name,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
+		UserID:    user.ID,
+		Url:       params.Url,
 	})
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, fmt.Sprintf("error creating user: %v", err))
+		respondWithError(w, http.StatusBadRequest, fmt.Sprintf("error creating feed: %v", err))
 		return
 	}
 
-	respondWithJSON(w, 201, databaseUserToUser(user))
-}
-
-func (apiCfg *apiConfig) handleGetUser(w http.ResponseWriter, r *http.Request, user database.User) {
-	respondWithJSON(w, 200, databaseUserToUser(user))
+	respondWithJSON(w, 201, databaseFeedToFeed(feed))
 }
