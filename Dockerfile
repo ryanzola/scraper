@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Install air for hot reloading, goose for migrations, and the PostgreSQL client
 RUN apt-get update && apt-get install -y postgresql-client \
-    && go install github.com/cosmtrek/air@latest \
+    && go install github.com/air-verse/air@latest \
     && go install github.com/pressly/goose/v3/cmd/goose@latest
 
 # Copy go mod and sum files
